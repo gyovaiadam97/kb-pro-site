@@ -1,0 +1,1060 @@
+<!doctype html>
+<html lang="hu"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kezdő Befektető Pro — Egy elemző a zsebedben · Kedvezményes ár aug. 12-ig</title>
+<meta name="description" content="A KB Pro elvégzi helyetted a részvényelemzés nehezét: KB Intelligencia MI-elemző, heti piaci kép, kész elemzések — heti 10 percben. Kedvezményes ár $15/hó örökre, aug. 12-ig.">
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&amp;family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500;700&amp;display=swap" rel="stylesheet">
+<script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<!-- TODO: Meta Pixel kód ide (Pixel ID beillesztése a mérés-beállításkor) + CAPI a szerveroldalon -->
+<style>
+body {
+font-family: 'Space Grotesk', sans-serif;
+background-color: #0c0d0c;
+color: #ffffff;
+overflow-x: hidden;
+}
+.font-mono, .font-geist {
+font-family: 'JetBrains Mono', monospace;
+}
+.font-jakarta { font-family: 'Space Grotesk', sans-serif !important; }
+.font-body { font-family: 'Inter', sans-serif; }
+/* Metallic text gradient — KB zsálya adaptáció */
+.text-metallic {
+background: linear-gradient(180deg, #ffffff 0%, #CFE0D3 45%, #0c0d0c 49%, #0c0d0c 51%, #496358 55%, #BBD1BF 100%);
+-webkit-background-clip: text;
+-webkit-text-fill-color: transparent;
+-webkit-text-stroke: 1px rgba(187, 209, 191, 0.4);
+filter: drop-shadow(0px 8px 16px rgba(0,0,0,0.9)) drop-shadow(0px 0px 20px rgba(187, 209, 191, 0.15));
+}
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: #0c0d0c; }
+::-webkit-scrollbar-thumb { background: #BBD1BF; opacity: 0.5; }
+@keyframes scan {
+0% { transform: translateX(-100%); }
+100% { transform: translateX(100%); }
+}
+.reveal {
+opacity: 0;
+transform: translateY(30px);
+filter: blur(10px);
+transition: opacity 0.8s cubic-bezier(0.2, 0.8, 0.2, 1),
+transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1),
+filter 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+will-change: opacity, transform, filter;
+}
+.reveal.active {
+opacity: 1;
+transform: translateY(0);
+filter: blur(0px);
+}
+.glow-card { position: relative; }
+.glow-card::before {
+content: "";
+position: absolute;
+inset: 0;
+background: radial-gradient(800px circle at var(--mouse-x, -1000px) var(--mouse-y, -1000px), rgba(187, 209, 191, 0.08), transparent 40%);
+z-index: 0;
+pointer-events: none;
+transition: opacity 0.3s ease;
+opacity: 0;
+border-radius: inherit;
+}
+.glow-card::after {
+content: "";
+position: absolute;
+inset: -1px;
+border-radius: inherit;
+background: radial-gradient(400px circle at var(--mouse-x, -1000px) var(--mouse-y, -1000px), rgba(187, 209, 191, 0.8), transparent 40%);
+-webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+-webkit-mask-composite: xor;
+mask-composite: exclude;
+padding: 1px;
+z-index: 1;
+pointer-events: none;
+transition: opacity 0.3s ease;
+opacity: 0;
+}
+.glow-card:hover::before,
+.glow-card:hover::after { opacity: 1; }
+.text-sage-soft { color: #dbe6dd; }
+</style>
+</head>
+  <body class="antialiased selection:bg-[#7fa389]/30 selection:text-white relative">
+    <!-- Fixed Backgrounds -->
+    <canvas id="webgl-canvas" class="fixed inset-0 z-0 pointer-events-none w-full h-full opacity-60"></canvas>
+
+    <!-- Background Noodles/Beams -->
+    <svg class="fixed inset-0 w-full h-full pointer-events-none z-[1] opacity-70" viewBox="0 0 100 100" preserveAspectRatio="none">
+      <defs>
+          <filter id="noodle-glow" x="-20%" y="-20%" width="140%" height="140%">
+              <feGaussianBlur stdDeviation="0.15" result="blur"></feGaussianBlur>
+              <feComposite in="SourceGraphic" in2="blur" operator="over"></feComposite>
+          </filter>
+      </defs>
+      <path d="M 15,-10 C 15,30 85,70 85,110" fill="none" stroke="rgba(187,209,191,0.06)" stroke-width="0.1"></path>
+      <path d="M 15,-10 C 15,30 85,70 85,110" fill="none" stroke="#7fa389" stroke-width="0.2" filter="url(#noodle-glow)" stroke-dasharray="10 150">
+          <animate attributeName="stroke-dashoffset" from="150" to="0" dur="6s" repeatCount="indefinite"></animate>
+      </path>
+      <path d="M 85,-10 C 85,40 20,60 20,110" fill="none" stroke="rgba(187,209,191,0.06)" stroke-width="0.1"></path>
+      <path d="M 85,-10 C 85,40 20,60 20,110" fill="none" stroke="#BBD1BF" stroke-width="0.2" filter="url(#noodle-glow)" stroke-dasharray="15 150">
+          <animate attributeName="stroke-dashoffset" from="150" to="0" dur="8.5s" repeatCount="indefinite"></animate>
+      </path>
+      <path d="M 50,-10 C 65,30 35,60 50,110" fill="none" stroke="rgba(187,209,191,0.06)" stroke-width="0.1"></path>
+      <path d="M 50,-10 C 65,30 35,60 50,110" fill="none" stroke="#496358" stroke-width="0.15" filter="url(#noodle-glow)" stroke-dasharray="5 100">
+          <animate attributeName="stroke-dashoffset" from="100" to="0" dur="4.2s" repeatCount="indefinite"></animate>
+      </path>
+    </svg>
+
+    <div class="fixed inset-0 z-[1] pointer-events-none opacity-20 mix-blend-overlay" style="background-image: url('data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.8%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22/%3E%3C/svg%3E');"></div>
+
+    <div class="fixed inset-0 z-[1] pointer-events-none mix-blend-overlay opacity-30" style="background-image: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(187, 209, 191, 0.1) 2px, rgba(187, 209, 191, 0.1) 4px); background-size: 100% 4px;"></div>
+
+    <div class="fixed inset-0 z-[1] pointer-events-none" style="background: radial-gradient(circle at center, transparent 0%, #0c0d0c 90%);"></div>
+
+    <!-- Fixed HUD Elements -->
+    <div id="bg-orange-bottom" class="fixed bottom-0 left-0 w-3/4 h-[75vh] bg-[#496358] z-[1] opacity-10 pointer-events-none" style="clip-path: polygon(0 100%, 0 20%, 80% 100%);"></div>
+    <div id="bg-darkorange-bottom" class="fixed bottom-0 left-0 w-2/3 h-[66vh] bg-[#33473d] z-[1] opacity-15 pointer-events-none" style="clip-path: polygon(0 100%, 0 40%, 60% 100%);"></div>
+    <div id="bg-orange-topleft" class="fixed top-0 left-0 w-64 h-full bg-[#496358] z-[1] opacity-5 pointer-events-none" style="clip-path: polygon(0 0, 100% 0, 40% 100%, 0 100%);"></div>
+
+    <!-- Navigation -->
+    <nav class="fixed top-0 left-0 right-0 z-[40] bg-[#0c0d0c]/80 backdrop-blur-md border-b border-[#BBD1BF]/10">
+      <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+        <!-- Logo -->
+        <div class="flex items-center gap-2">
+          <div class="w-6 h-6 border border-[#BBD1BF] flex items-center justify-center relative overflow-hidden bg-[#2b3a32]/50">
+            <div class="w-1.5 h-1.5 bg-[#7fa389] relative z-10 shadow-[0_0_8px_#BBD1BF]"></div>
+          </div>
+          <span class="uppercase text-xl font-medium text-white tracking-widest font-jakarta">KB Pro</span>
+        </div>
+
+        <!-- Links (Desktop) -->
+        <div class="hidden md:flex items-center gap-8 text-xs font-mono tracking-widest uppercase text-sage-soft">
+          <a href="#rendszer" class="hover:text-[#BBD1BF] transition-colors font-geist">A rendszer</a>
+          <a href="#stack" class="hover:text-[#BBD1BF] transition-colors font-geist">Mit kapsz</a>
+          <a href="#velemenyek" class="hover:text-[#BBD1BF] transition-colors font-geist">Tagok</a>
+          <a href="#gyik" class="hover:text-[#BBD1BF] transition-colors flex items-center gap-1 font-geist">
+            GYIK
+            <span class="text-[#7fa389] mb-1 font-geist">[6]</span>
+          </a>
+        </div>
+
+        <!-- Actions -->
+        <div class="flex items-center gap-4">
+          <span class="text-xs font-mono uppercase tracking-widest hidden sm:block text-sage-soft font-geist">
+            Aug. 12-ig
+          </span>
+          <a href="#arak" class="group relative flex items-center justify-center px-6 py-2.5 cursor-pointer overflow-hidden bg-[#1f2622]/40 border border-white/5 backdrop-blur-sm shadow-[inset_0_2px_10px_rgba(0,0,0,0.5)]">
+            <div class="absolute left-0 top-0 bottom-0 w-[3px] bg-[#BBD1BF] transition-all group-hover:w-[6px] group-hover:bg-white shadow-[0_0_10px_rgba(187,209,191,0.5)]"></div>
+            <div class="absolute right-0 top-0 bottom-0 w-[3px] bg-[#BBD1BF] transition-all group-hover:w-[6px] group-hover:bg-white shadow-[0_0_10px_rgba(187,209,191,0.5)]"></div>
+            <div class="absolute inset-0 bg-gradient-to-r from-[#BBD1BF]/0 via-[#BBD1BF]/10 to-[#BBD1BF]/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+            <span class="relative z-10 text-white font-mono text-xs tracking-widest uppercase flex items-center gap-2 group-hover:drop-shadow-[0_0_8px_rgba(255,255,255,0.8)] transition-all font-geist">
+              Kedvezményes ár
+              <iconify-icon icon="solar:stars-linear" class="w-4 h-4 opacity-70"></iconify-icon>
+            </span>
+          </a>
+        </div>
+      </div>
+    </nav>
+
+    <main class="pt-32 relative z-10" id="main-content">
+      <!-- Hero Section -->
+      <section class="min-h-[80vh] flex flex-col lg:flex-row max-w-7xl mr-auto ml-auto pr-6 pl-6 relative items-center justify-center">
+        <!-- Left Content -->
+        <div class="lg:w-1/2 z-10 lg:pt-0 flex flex-col w-full pt-12 items-start">
+          <div class="flex flex-col items-start mb-6" id="top-accent">
+            <div class="inline-flex items-center gap-2 px-3 py-1.5 border border-[#BBD1BF]/20 bg-[#2b3a32]/30 backdrop-blur-sm mb-4">
+              <span class="text-xs font-mono text-white uppercase tracking-widest bg-[#496358]/50 px-2 py-0.5 border border-[#496358]/80 font-geist">
+                Launch
+              </span>
+              <span class="text-xs font-mono text-[#CFE0D3] tracking-widest uppercase font-geist">
+                Kedvezményes ár · aug. 12-ig
+              </span>
+            </div>
+            <div class="flex gap-0.5 h-1 w-24 opacity-80">
+              <div class="w-1 bg-[#BBD1BF]"></div>
+              <div class="w-2 bg-[#BBD1BF]"></div>
+              <div class="w-0.5 bg-[#BBD1BF]"></div>
+              <div class="w-3 bg-[#BBD1BF]"></div>
+              <div class="w-1 bg-[#BBD1BF]"></div>
+            </div>
+          </div>
+
+          <div class="text-[#BBD1BF]/80 font-mono text-xs tracking-widest uppercase mb-4 font-geist" id="pre-title" style="letter-spacing: 0.1em;">
+            Kezdő Befektető Pro · KB Intelligencia
+          </div>
+
+          <h1 class="text-5xl sm:text-6xl lg:text-[5rem] uppercase tracking-tight leading-[1.1] mb-6 text-metallic font-jakarta font-medium" id="title-text" style=" filter: blur(0px);">
+            Egy elemző
+            <br>
+            a zsebedben
+          </h1>
+
+          <p class="leading-relaxed text-sm tracking-wide font-mono max-w-xl mb-10 text-sage-soft font-geist uppercase">
+            Nem több tananyag. A KB Pro elvégzi helyetted az elemzés nehezét —
+            MI-elemző, heti piaci kép, kész elemzések. Heti 10 percben.
+          </p>
+
+          <div class="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto">
+            <a href="https://www.skool.com/kb-pro-9433/about" class="group relative flex items-center justify-center px-8 py-3.5 w-full sm:w-auto cursor-pointer overflow-hidden bg-[#1f2622]/40 border border-white/5 backdrop-blur-sm shadow-[inset_0_2px_10px_rgba(0,0,0,0.5)]">
+              <div class="absolute left-0 top-0 bottom-0 w-[4px] bg-[#BBD1BF] transition-all group-hover:w-[8px] group-hover:bg-white shadow-[0_0_10px_rgba(187,209,191,0.5)]"></div>
+              <div class="absolute right-0 top-0 bottom-0 w-[4px] bg-[#BBD1BF] transition-all group-hover:w-[8px] group-hover:bg-white shadow-[0_0_10px_rgba(187,209,191,0.5)]"></div>
+              <div class="absolute inset-0 bg-gradient-to-r from-[#BBD1BF]/0 via-[#BBD1BF]/10 to-[#BBD1BF]/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+              <span class="relative z-10 text-white font-mono text-xs tracking-widest uppercase flex items-center gap-2 group-hover:drop-shadow-[0_0_8px_rgba(255,255,255,0.8)] transition-all font-geist">
+                Belépek $15-ért
+                <iconify-icon icon="solar:alt-arrow-right-linear" class="w-4 h-4"></iconify-icon>
+              </span>
+            </a>
+            <a href="#rendszer" class="w-full sm:w-auto bg-[#0c0d0c]/50 backdrop-blur-sm border border-[#8fa596]/40 px-8 py-3.5 text-xs font-mono tracking-widest uppercase flex justify-center items-center hover:text-[#BBD1BF] hover:border-[#BBD1BF]/40 transition-colors text-sage-soft font-geist">
+              Hogyan működik?
+            </a>
+          </div>
+        </div>
+
+        <!-- Right Graphic (Radar/Nodes) -->
+        <div class="lg:w-1/2 aspect-square max-w-[500px] lg:max-w-[700px] mx-auto lg:mt-0 flex pointer-events-none w-full mt-16 relative items-center justify-center">
+          <div class="absolute w-[120%] h-[120%] border border-[#BBD1BF]/10 rounded-full top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"></div>
+          <div class="absolute w-[90%] h-[90%] border border-[#BBD1BF]/20 rounded-full top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 border-dashed"></div>
+
+          <div class="relative w-24 h-24 border-2 border-[#BBD1BF] rounded-full flex items-center justify-center bg-[#1f2622]">
+            <div class="absolute inset-0 bg-[#BBD1BF] rounded-full blur-[30px] opacity-20"></div>
+            <div class="w-8 h-8 bg-[#7fa389] rounded-sm rotate-45 shadow-[0_0_15px_#BBD1BF]"></div>
+          </div>
+
+          <div class="absolute top-[20%] right-[30%] border border-[#BBD1BF]/30 bg-[#1f2622] p-3 shadow-[0_0_15px_rgba(187,209,191,0.1)]">
+            <div class="w-4 h-4 bg-[#496358]/80 rounded-sm shadow-[0_0_10px_#496358]"></div>
+            <div class="text-[10px] font-mono text-[#BBD1BF] mt-2 uppercase font-geist">
+              NVDA_elemzés
+            </div>
+          </div>
+
+          <div class="absolute bottom-[30%] right-[10%] border border-[#BBD1BF]/30 bg-[#1f2622] p-3 shadow-[0_0_15px_rgba(187,209,191,0.1)]">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6 text-[#BBD1BF]">
+              <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+              <polyline points="2 12 12 17 22 12"></polyline>
+              <polyline points="2 17 12 22 22 17"></polyline>
+            </svg>
+            <div class="text-[10px] font-mono text-[#BBD1BF] mt-2 uppercase font-geist">
+              Makró_körkép
+            </div>
+          </div>
+
+          <div class="absolute top-[30%] left-[15%] border border-[#BBD1BF]/30 bg-[#1f2622] p-3 rounded-full">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 text-gray-400">
+              <path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"></path>
+              <path d="M3 5v14a2 2 0 0 0 2 2h16v-5"></path>
+              <path d="M18 12a2 2 0 0 0 0 4h4v-4Z"></path>
+            </svg>
+          </div>
+
+          <div class="absolute bottom-[10%] right-[15%] bg-[#1f2622]/90 backdrop-blur-xl border border-[#BBD1BF]/30 p-4 flex items-center gap-4 w-72 shadow-2xl">
+            <div class="w-10 h-10 bg-[#0c0d0c] border border-[#BBD1BF]/20 flex items-center justify-center">
+              <div class="w-full h-[2px] bg-gradient-to-r from-[#496358] via-[#BBD1BF] to-[#BBD1BF] mx-2"></div>
+            </div>
+            <div>
+              <p class="text-xs text-[#BBD1BF] font-mono uppercase tracking-widest font-geist">
+                KB Intelligencia
+              </p>
+              <p class="text-xs font-mono uppercase mt-1 text-sage-soft font-geist">
+                Elemzés: kész · 5 perc
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Stats Section -->
+      <section class="bg-[#0a0b0a] mt-32 relative">
+        <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[100%] h-[1px] bg-gradient-to-r from-transparent via-[#BBD1BF]/50 to-transparent pointer-events-none"></div>
+
+        <div class="max-w-7xl mx-auto px-6 pt-24 text-center relative z-10">
+          <div class="reveal inline-flex px-3 py-1 border border-[#BBD1BF]/20 bg-[#2b3a32]/30 text-xs font-mono text-[#BBD1BF] uppercase tracking-widest mb-8 font-geist">
+            Ismerős?
+          </div>
+
+          <h2 class="reveal text-2xl sm:text-3xl lg:text-4xl tracking-widest text-white max-w-3xl mx-auto leading-tight mb-8 uppercase font-jakarta font-medium">
+            „Nincs időm mélyelemzéseket olvasni."
+          </h2>
+          <p class="reveal text-xs font-mono uppercase tracking-widest text-sage-soft max-w-2xl mx-auto mb-20 font-geist leading-relaxed opacity-80">
+            225 magyar befektetőt kérdeztünk meg. A közös bennük: nem tudáshiány — eszközhiány.
+            Este 10-kor, munka után nem mélyelemzésre van időd, hanem egy elemzőre, aki elvégzi helyetted.
+          </p>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-8 items-center border-t border-b border-[#BBD1BF]/10 py-12">
+            <div class="reveal text-center md:text-left">
+              <p class="text-4xl tracking-tight mb-2 text-[#BBD1BF] font-jakarta font-medium">
+                65
+              </p>
+              <p class="text-xs font-mono uppercase tracking-widest text-sage-soft font-geist">
+                aktív tag
+              </p>
+            </div>
+
+            <div class="reveal flex flex-wrap justify-center gap-8 items-center opacity-70 text-white font-mono uppercase tracking-widest text-sm">
+              <span class="font-geist">Nasdaq_</span>
+              <span class="flex items-center gap-1 font-geist">
+                <iconify-icon icon="solar:infinity-linear" class="w-5 h-5"></iconify-icon>
+                Big Tech
+              </span>
+              <span class="font-geist">S&amp;P 500</span>
+            </div>
+
+            <div class="reveal text-center md:text-right">
+              <p class="text-4xl tracking-tight mb-2 text-[#BBD1BF] font-jakarta font-medium">
+                10 perc
+              </p>
+              <p class="text-xs font-mono uppercase tracking-widest text-sage-soft font-geist">
+                heti időigény
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Features Bento Box -->
+      <section class="max-w-7xl mx-auto px-6 py-32" id="rendszer">
+        <div class="reveal mb-12 border-l-[6px] border-[#BBD1BF] pl-6 shadow-[inset_2px_0_10px_rgba(187,209,191,0.1)]">
+          <div class="text-xs font-mono text-[#BBD1BF] uppercase tracking-widest mb-4 font-geist">
+            A_Rendszer
+          </div>
+          <div class="flex flex-col md:flex-row md:items-end justify-between gap-6">
+            <h2 class="text-3xl sm:text-4xl tracking-widest max-w-md leading-tight uppercase font-jakarta font-medium">
+              Nem a tipp számít. A rendszer.
+            </h2>
+            <p class="text-xs font-mono uppercase tracking-widest max-w-sm md:text-right text-sage-soft font-geist">
+              Minden részvényre ugyanaz a strukturált átvilágítás. Nem érzelemből — rendszerből.
+            </p>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-6" id="stack">
+          <!-- Card 1: KB Intelligencia -->
+          <div class="md:col-span-12 lg:col-span-5 p-8 relative overflow-hidden group glow-card reveal" style="background: linear-gradient(135deg, rgba(31, 38, 34, 0.95) 0%, rgba(18, 22, 19, 0.98) 100%); box-shadow: 0 0 30px rgba(0,0,0,0.8), inset 0 0 20px rgba(187, 209, 191, 0.05); border: 1px solid rgba(187, 209, 191, 0.2);">
+            <div class="absolute inset-0 pointer-events-none opacity-[0.03]" style="background-image: repeating-linear-gradient(-45deg, transparent, transparent 10px, #ffffff 10px, #ffffff 11px);"></div>
+            <div class="absolute top-0 right-0 w-64 h-64 bg-[#7fa389]/5 blur-[80px] group-hover:bg-[#7fa389]/10 transition-colors"></div>
+
+            <div class="relative z-10">
+              <h3 class="text-xl tracking-widest mb-2 uppercase text-white font-jakarta font-medium">
+                KB Intelligencia
+              </h3>
+              <p class="text-xs font-mono uppercase mb-12 max-w-xs leading-relaxed text-sage-soft font-geist">
+                Beírod a tickert — a saját MI-elemzőnk lefuttatja a teljes átvilágítást. Korlátlanul, magyarul.
+              </p>
+
+              <!-- Mock UI: ticker -> elemzés -->
+              <div class="w-full max-w-[280px] mx-auto relative border border-[#BBD1BF]/20 p-4 bg-[#0c0d0c]">
+                <div class="flex flex-col items-center gap-2 relative z-10">
+                  <div class="bg-[#1f2622] border border-[#BBD1BF]/20 p-4 w-full flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                      <div class="w-8 h-8 border border-[#BBD1BF]/30 flex items-center justify-center">
+                        <iconify-icon icon="solar:magnifer-linear" class="w-4 h-4 text-[#BBD1BF]"></iconify-icon>
+                      </div>
+                      <span class="font-mono font-medium text-sm text-white font-geist">
+                        NVDA
+                      </span>
+                    </div>
+                    <span class="font-mono text-sage-soft font-geist">ticker</span>
+                  </div>
+
+                  <div class="w-10 h-10 border border-[#BBD1BF] bg-[#0c0d0c] flex items-center justify-center -my-4 relative z-10 shadow-[0_0_10px_rgba(187,209,191,0.2)]">
+                    <iconify-icon icon="solar:transfer-vertical-linear" class="w-5 h-5 text-[#BBD1BF]"></iconify-icon>
+                  </div>
+
+                  <div class="bg-[#1f2622] border border-[#BBD1BF]/20 p-4 w-full flex items-center justify-between opacity-50">
+                    <div class="flex items-center gap-3">
+                      <div class="w-8 h-8 border border-[#7fa389]/50 flex items-center justify-center">
+                        <iconify-icon icon="solar:document-text-linear" class="w-4 h-4 text-[#7fa389]"></iconify-icon>
+                      </div>
+                      <span class="font-mono font-medium text-sm text-white font-geist">
+                        Elemzés
+                      </span>
+                    </div>
+                    <span class="font-mono text-sage-soft font-geist">5 perc</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="mt-12">
+                <a href="https://www.skool.com/kb-pro-9433/about" class="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-[#BBD1BF] hover:text-white transition-colors font-geist">
+                  Első_elemzésed
+                  <iconify-icon icon="solar:arrow-right-linear" class="w-4 h-4"></iconify-icon>
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 2: Heti piaci kép -->
+          <div class="md:col-span-12 lg:col-span-7 p-8 relative overflow-hidden group glow-card reveal" style="background: linear-gradient(135deg, rgba(31, 38, 34, 0.95) 0%, rgba(18, 22, 19, 0.98) 100%); box-shadow: 0 0 30px rgba(0,0,0,0.8), inset 0 0 20px rgba(187, 209, 191, 0.05); border: 1px solid rgba(187, 209, 191, 0.2);">
+            <div class="absolute inset-0 pointer-events-none opacity-[0.03]" style="background-image: repeating-linear-gradient(-45deg, transparent, transparent 10px, #ffffff 10px, #ffffff 11px);"></div>
+            <div class="absolute top-1/2 right-1/4 w-64 h-64 bg-[#7fa389]/5 blur-[80px] group-hover:bg-[#7fa389]/10 transition-colors"></div>
+            <div class="relative z-10 h-full flex flex-col">
+              <div class="flex justify-between items-start mb-8">
+                <div>
+                  <h3 class="text-xl tracking-widest mb-2 uppercase text-white font-jakarta font-medium">
+                    Heti piaci kép
+                  </h3>
+                  <p class="text-xs font-mono uppercase max-w-sm text-sage-soft font-geist">
+                    Makró-körkép a csapattól: mi történt, mi számít — 10 perc alatt átlátod.
+                  </p>
+                </div>
+              </div>
+
+              <div class="flex-1 relative mt-auto pt-10 border-b border-[#BBD1BF]/10 pb-4">
+                <svg class="absolute inset-0 w-full h-full" preserveAspectRatio="none" viewBox="0 0 100 100">
+                  <path d="M0,80 Q20,60 40,70 T80,30 T100,10" fill="none" stroke="#BBD1BF" stroke-width="0.5" class="drop-shadow-[0_0_5px_rgba(187,209,191,0.5)]"></path>
+                  <path d="M0,80 Q20,60 40,70 T80,30 T100,10 L100,100 L0,100 Z" fill="url(#grad)" opacity="0.1"></path>
+                  <defs>
+                    <linearGradient id="grad" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stop-color="#BBD1BF"></stop>
+                      <stop offset="100%" stop-color="transparent"></stop>
+                    </linearGradient>
+                  </defs>
+                </svg>
+
+                <div class="absolute top-[20%] left-[60%] flex flex-col items-center">
+                  <div class="bg-[#BBD1BF] w-1.5 h-1.5 rounded-sm shadow-[0_0_5px_#BBD1BF] mb-2"></div>
+                  <div class="bg-[#0c0d0c] border border-[#BBD1BF]/30 p-2 text-center min-w-[120px]">
+                    <p class="text-xs font-mono uppercase text-white mb-1 font-geist">
+                      Nasdaq 100
+                    </p>
+                    <p class="text-xs font-mono text-[#BBD1BF] font-geist">heti körkép</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 3: Kiemelt elemzések -->
+          <div class="md:col-span-12 lg:col-span-7 p-8 relative overflow-hidden h-[350px] glow-card reveal" style="background: linear-gradient(135deg, rgba(31, 38, 34, 0.95) 0%, rgba(18, 22, 19, 0.98) 100%); box-shadow: 0 0 30px rgba(0,0,0,0.8), inset 0 0 20px rgba(187, 209, 191, 0.05); border: 1px solid rgba(187, 209, 191, 0.2);">
+            <div class="absolute inset-0 pointer-events-none opacity-[0.03]" style="background-image: repeating-linear-gradient(-45deg, transparent, transparent 10px, #ffffff 10px, #ffffff 11px);"></div>
+            <div class="absolute top-1/2 left-1/4 w-32 h-32 bg-[#7fa389]/10 blur-[60px] rounded-full"></div>
+
+            <div class="relative z-10 flex flex-col h-full justify-between">
+              <div class="w-16 h-16 border-2 border-[#BBD1BF] flex items-center justify-center bg-[#0c0d0c] shadow-[0_0_15px_rgba(187,209,191,0.2)] mb-8">
+                <iconify-icon icon="solar:chart-2-linear" class="w-8 h-8 text-[#BBD1BF]"></iconify-icon>
+              </div>
+              <div class="">
+                <h3 class="text-xl tracking-widest mb-2 uppercase text-white font-jakarta font-medium">
+                  Kiemelt részvényelemzések
+                </h3>
+                <p class="text-xs font-mono uppercase text-sage-soft font-geist">
+                  Fundamentum, szentiment, árazás — a legérdekesebb nevekre, készen. Plusz előre megírt stratégiák.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 4: Közösség -->
+          <div class="md:col-span-12 lg:col-span-5 p-8 relative overflow-hidden h-[350px] glow-card reveal" style="background: linear-gradient(135deg, rgba(31, 38, 34, 0.95) 0%, rgba(18, 22, 19, 0.98) 100%); box-shadow: 0 0 30px rgba(0,0,0,0.8), inset 0 0 20px rgba(187, 209, 191, 0.05); border: 1px solid rgba(187, 209, 191, 0.2);">
+            <div class="absolute inset-0 pointer-events-none opacity-[0.03]" style="background-image: repeating-linear-gradient(-45deg, transparent, transparent 10px, #ffffff 10px, #ffffff 11px);"></div>
+            <div class="relative z-10 w-full md:w-2/3">
+              <h3 class="text-xl tracking-widest mb-2 uppercase text-white font-jakarta font-medium">
+                Zárt közösség
+              </h3>
+              <p class="text-xs font-mono uppercase text-sage-soft font-geist">
+                Kérdezz bármikor — nem egyedül csinálod. Semmi zaj, semmi hype.
+              </p>
+            </div>
+
+            <div class="absolute -right-10 top-1/2 -translate-y-1/2 w-64 h-64 border border-[#BBD1BF]/20 rounded-full flex items-center justify-center">
+              <div class="w-48 h-48 border border-dashed border-[#BBD1BF]/30 rounded-full flex items-center justify-center rotate-45">
+                <div class="w-32 h-32 border border-[#BBD1BF]/20 rounded-full flex items-center justify-center">
+                  <div class="w-2 h-2 bg-[#496358] rounded-sm shadow-[0_0_10px_#496358]"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Pricing (Keycard) Section -->
+      <section class="max-w-7xl mx-auto px-6 py-16" id="arak">
+        <div class="p-8 md:p-16 flex flex-col lg:flex-row items-center gap-16 relative overflow-hidden" style="background: linear-gradient(135deg, rgba(31, 38, 34, 0.95) 0%, rgba(18, 22, 19, 0.98) 100%); box-shadow: inset 0 0 30px rgba(187, 209, 191, 0.05); border: 1px solid rgba(187, 209, 191, 0.2);">
+          <div class="absolute inset-0 pointer-events-none opacity-[0.03]" style="background-image: repeating-linear-gradient(-45deg, transparent, transparent 10px, #ffffff 10px, #ffffff 11px);"></div>
+
+          <div class="reveal w-full lg:w-1/2 relative z-10 border-l-[6px] border-[#BBD1BF] pl-8">
+            <div class="text-xs font-mono text-[#BBD1BF] uppercase tracking-widest mb-6 font-geist">
+              Kedvezményes_ár · aug. 12-ig
+            </div>
+
+            <h2 class="text-3xl sm:text-4xl lg:text-5xl uppercase tracking-widest mb-6 max-w-md leading-tight text-white drop-shadow-[0_0_10px_rgba(255,255,255,0.2)] font-jakarta font-medium">
+              <span class="line-through opacity-40">$24</span> $15<span class="text-2xl">/hó</span> — örökre
+            </h2>
+            <p class="text-xs font-mono uppercase tracking-widest text-sage-soft mb-12 max-w-md font-geist leading-relaxed">
+              ~5 400 Ft, kevesebb mint napi 180 Ft. Az ár neked örökre rögzül, amíg tag maradsz.
+              Éves: <span class="line-through opacity-40">$169</span> <span class="text-[#BBD1BF]">$99</span> (= $8,25/hó).
+              Aug. 12. éjfél után minden visszaáll $24-re.
+            </p>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-8 mb-12">
+              <div class="">
+                <div class="w-8 h-8 mb-4 border border-[#BBD1BF]/40 flex items-center justify-center text-[#BBD1BF]">
+                  <iconify-icon icon="solar:shield-keyhole-linear" class="w-4 h-4"></iconify-icon>
+                </div>
+                <p class="text-xs font-mono uppercase leading-relaxed text-sage-soft font-geist">
+                  Nincs lekötés: havonta fizetsz, bármikor egy kattintással lemondhatod.
+                </p>
+              </div>
+              <div>
+                <div class="w-8 h-8 mb-4 border border-[#BBD1BF]/40 flex items-center justify-center text-[#BBD1BF]">
+                  <iconify-icon icon="solar:bolt-linear" class="w-4 h-4"></iconify-icon>
+                </div>
+                <p class="text-xs font-mono uppercase leading-relaxed text-sage-soft font-geist">
+                  Minden benne van: KB Intelligencia, piaci kép, elemzések, közösség.
+                </p>
+              </div>
+            </div>
+
+            <a href="https://www.skool.com/kb-pro-9433/about" class="group relative flex items-center justify-center px-8 py-3 w-max cursor-pointer overflow-hidden bg-[#1f2622]/40 border border-white/5 backdrop-blur-sm shadow-[inset_0_2px_10px_rgba(0,0,0,0.5)]">
+              <div class="absolute left-0 top-0 bottom-0 w-[4px] bg-[#BBD1BF] transition-all group-hover:w-[8px] group-hover:bg-white shadow-[0_0_10px_rgba(187,209,191,0.5)]"></div>
+              <div class="absolute inset-0 bg-gradient-to-r from-[#BBD1BF]/0 via-[#BBD1BF]/10 to-[#BBD1BF]/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+              <span class="relative z-10 text-white font-mono text-xs tracking-widest uppercase flex items-center gap-2 group-hover:drop-shadow-[0_0_8px_rgba(255,255,255,0.8)] font-geist">
+                Belépek kedvezményes áron
+                <iconify-icon icon="solar:arrow-right-linear" class="w-4 h-4"></iconify-icon>
+              </span>
+            </a>
+          </div>
+
+          <!-- Right Visual (Founder card) -->
+          <div class="reveal w-full lg:w-1/2 flex justify-center lg:justify-end relative z-10">
+            <div class="w-[300px] h-[480px] bg-[#0c0d0c] border-2 border-[#BBD1BF]/50 p-8 relative overflow-hidden shadow-[0_0_30px_rgba(187,209,191,0.2)] transform transition-transform hover:scale-105 duration-500">
+              <div class="flex justify-between items-start relative z-10 border-b border-[#BBD1BF]/30 pb-4">
+                <span class="text-[#BBD1BF] text-[10px] font-mono uppercase tracking-widest font-geist">
+                  KB_Pro_tagság
+                  <br>
+                  2026_08
+                </span>
+                <iconify-icon icon="solar:rss-linear" class="w-5 h-5 text-[#BBD1BF] rotate-90"></iconify-icon>
+              </div>
+
+              <div class="mt-12 relative z-10">
+                <h3 class="text-4xl tracking-widest uppercase text-white font-jakarta font-medium">
+                  KB Pro
+                </h3>
+              </div>
+
+              <div class="mt-8 border-l-[4px] border-[#496358] pl-4 relative z-10">
+                <p class="text-[10px] font-mono uppercase tracking-widest text-sage-soft font-geist">
+                  Rögzített ár
+                </p>
+                <p class="text-xs font-mono text-[#7fa389] uppercase tracking-widest mt-1 font-geist">
+                  $15 / hó · örökre
+                </p>
+              </div>
+
+              <div class="absolute bottom-24 left-8 right-8 flex gap-[2px] h-8 opacity-60">
+                <div class="w-1 bg-[#BBD1BF]"></div>
+                <div class="w-2 bg-[#BBD1BF]"></div>
+                <div class="w-0.5 bg-[#BBD1BF]"></div>
+                <div class="w-3 bg-[#BBD1BF]"></div>
+                <div class="w-1 bg-[#BBD1BF]"></div>
+                <div class="w-2 bg-[#BBD1BF]"></div>
+                <div class="w-0.5 bg-[#BBD1BF]"></div>
+                <div class="w-1 bg-[#BBD1BF]"></div>
+                <div class="w-4 bg-[#BBD1BF]"></div>
+                <div class="w-1 bg-[#BBD1BF]"></div>
+                <div class="w-2 bg-[#BBD1BF]"></div>
+                <div class="w-0.5 bg-[#BBD1BF]"></div>
+              </div>
+
+              <div class="absolute bottom-8 left-8 right-8 flex justify-between items-end relative z-10 mt-auto pt-32">
+                <span class="text-[#BBD1BF] font-mono tracking-widest text-[10px] uppercase font-geist">
+                  Érvényes: aug. 12-ig
+                </span>
+                <div class="w-4 h-4 border border-[#BBD1BF] bg-[#2b3a32]/50"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Testimonials Section -->
+      <section class="py-24 relative overflow-hidden border-t border-[#BBD1BF]/10 bg-[#0c0d0c]" id="velemenyek">
+        <div class="absolute inset-0 pointer-events-none opacity-[0.02]" style="background-image: repeating-linear-gradient(-45deg, transparent, transparent 10px, #ffffff 10px, #ffffff 11px);"></div>
+
+        <div class="max-w-7xl mx-auto px-6 relative z-10">
+          <div class="reveal flex flex-col items-center text-center mb-20">
+            <div class="inline-flex px-3 py-1 border border-[#BBD1BF]/20 bg-[#2b3a32]/30 text-xs font-mono text-[#BBD1BF] uppercase tracking-widest mb-6 font-geist shadow-[inset_0_0_8px_rgba(187,209,191,0.2)]">
+              Tagi_visszajelzések
+            </div>
+            <h2 class="text-3xl md:text-5xl uppercase tracking-tight text-white font-jakarta font-medium mb-6">
+              Mit mondanak a tagok
+            </h2>
+            <p class="text-xs font-mono uppercase tracking-widest text-sage-soft max-w-2xl font-geist leading-relaxed opacity-80">
+              65 magyar befektető elemez már rendszerrel, nem találgatással.
+            </p>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <!-- Quote 1 (VALÓS) -->
+            <div class="glow-card reveal p-8 bg-[#1f2622]/90 backdrop-blur-md border border-[#BBD1BF]/20 hover:border-[#BBD1BF]/60 transition-all duration-500 group relative overflow-hidden shadow-[0_0_20px_rgba(0,0,0,0.8),inset_0_0_20px_rgba(187,209,191,0.05)]">
+              <div class="absolute top-0 right-0 w-32 h-32 bg-[#7fa389]/5 blur-[40px] group-hover:bg-[#7fa389]/20 transition-colors duration-500"></div>
+              <div class="absolute top-0 left-0 w-4 h-4 border-t border-l border-[#BBD1BF]/50 transition-all duration-300 group-hover:w-6 group-hover:h-6 group-hover:border-[#BBD1BF]"></div>
+              <div class="absolute top-0 right-0 w-4 h-4 border-t border-r border-[#BBD1BF]/50 transition-all duration-300 group-hover:w-6 group-hover:h-6 group-hover:border-[#BBD1BF]"></div>
+              <div class="absolute bottom-0 left-0 w-4 h-4 border-b border-l border-[#BBD1BF]/50 transition-all duration-300 group-hover:w-6 group-hover:h-6 group-hover:border-[#BBD1BF]"></div>
+              <div class="absolute bottom-0 right-0 w-4 h-4 border-b border-r border-[#BBD1BF]/50 transition-all duration-300 group-hover:w-6 group-hover:h-6 group-hover:border-[#BBD1BF]"></div>
+
+              <div class="relative z-10 flex flex-col h-full">
+                <div class="flex justify-between items-start mb-10">
+                  <div class="w-12 h-12 border border-[#BBD1BF]/30 flex items-center justify-center bg-[#0c0d0c] text-[#BBD1BF] group-hover:scale-110 group-hover:border-[#BBD1BF] transition-all duration-300 shadow-[0_0_10px_rgba(187,209,191,0.1)]">
+                    <iconify-icon icon="lucide:quote" class="w-6 h-6"></iconify-icon>
+                  </div>
+                  <div class="flex items-center gap-2 bg-[#0c0d0c] border border-[#BBD1BF]/20 px-2 py-1">
+                    <div class="w-1.5 h-1.5 rounded-full bg-[#BBD1BF] shadow-[0_0_5px_#BBD1BF] animate-[pulse_2s_ease-in-out_infinite]"></div>
+                    <span class="text-[10px] font-mono text-[#BBD1BF] uppercase tracking-widest font-geist">Aktív tag</span>
+                  </div>
+                </div>
+
+                <p class="text-sm text-white font-body italic leading-relaxed mb-10">
+                  „A részvényelemző AI-t mindenféleképpen megtartanám — nagyon nagy értéket teremtettetek."
+                </p>
+
+                <div class="mt-auto space-y-3 border-t border-[#BBD1BF]/10 pt-6">
+                  <div class="flex justify-between items-center text-[10px] font-mono uppercase tracking-widest text-sage-soft font-geist">
+                    <span>KB Pro tag</span>
+                    <span class="text-[#BBD1BF]">visszajelzés-körkérdés</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Quote 2 (PLACEHOLDER — cseréld valósra!) -->
+            <div class="glow-card reveal p-8 bg-[#1f2622]/90 backdrop-blur-md border border-[#BBD1BF]/20 hover:border-[#BBD1BF]/60 transition-all duration-500 group relative overflow-hidden shadow-[0_0_20px_rgba(0,0,0,0.8),inset_0_0_20px_rgba(187,209,191,0.05)]">
+              <div class="absolute top-0 right-0 w-32 h-32 bg-[#7fa389]/5 blur-[40px] group-hover:bg-[#7fa389]/20 transition-colors duration-500"></div>
+              <div class="absolute top-0 left-0 w-4 h-4 border-t border-l border-[#BBD1BF]/50 transition-all duration-300 group-hover:w-6 group-hover:h-6 group-hover:border-[#BBD1BF]"></div>
+              <div class="absolute top-0 right-0 w-4 h-4 border-t border-r border-[#BBD1BF]/50 transition-all duration-300 group-hover:w-6 group-hover:h-6 group-hover:border-[#BBD1BF]"></div>
+              <div class="absolute bottom-0 left-0 w-4 h-4 border-b border-l border-[#BBD1BF]/50 transition-all duration-300 group-hover:w-6 group-hover:h-6 group-hover:border-[#BBD1BF]"></div>
+              <div class="absolute bottom-0 right-0 w-4 h-4 border-b border-r border-[#BBD1BF]/50 transition-all duration-300 group-hover:w-6 group-hover:h-6 group-hover:border-[#BBD1BF]"></div>
+
+              <div class="relative z-10 flex flex-col h-full">
+                <div class="flex justify-between items-start mb-10">
+                  <div class="w-12 h-12 border border-[#BBD1BF]/30 flex items-center justify-center bg-[#0c0d0c] text-[#BBD1BF] group-hover:scale-110 group-hover:border-[#BBD1BF] transition-all duration-300 shadow-[0_0_10px_rgba(187,209,191,0.1)]">
+                    <iconify-icon icon="lucide:quote" class="w-6 h-6"></iconify-icon>
+                  </div>
+                  <div class="flex items-center gap-2 bg-[#0c0d0c] border border-[#BBD1BF]/20 px-2 py-1">
+                    <div class="w-1.5 h-1.5 rounded-full bg-[#BBD1BF] shadow-[0_0_5px_#BBD1BF] animate-[pulse_2s_ease-in-out_infinite]"></div>
+                    <span class="text-[10px] font-mono text-[#BBD1BF] uppercase tracking-widest font-geist">Aktív tag</span>
+                  </div>
+                </div>
+
+                <p class="text-sm text-white font-body italic leading-relaxed mb-10">
+                  „[VALÓS tagi idézet ide — pl. az időspórolásról vagy az első saját elemzésről. Kitalált idézet NEM mehet ki!]"
+                </p>
+
+                <div class="mt-auto space-y-3 border-t border-[#BBD1BF]/10 pt-6">
+                  <div class="flex justify-between items-center text-[10px] font-mono uppercase tracking-widest text-sage-soft font-geist">
+                    <span>[Tag neve]</span>
+                    <span class="text-[#BBD1BF]">[forrás]</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Quote 3 (PLACEHOLDER — cseréld valósra!) -->
+            <div class="glow-card reveal p-8 bg-[#1f2622]/90 backdrop-blur-md border border-[#BBD1BF]/20 hover:border-[#BBD1BF]/60 transition-all duration-500 group relative overflow-hidden shadow-[0_0_20px_rgba(0,0,0,0.8),inset_0_0_20px_rgba(187,209,191,0.05)]">
+              <div class="absolute top-0 right-0 w-32 h-32 bg-[#7fa389]/5 blur-[40px] group-hover:bg-[#7fa389]/20 transition-colors duration-500"></div>
+              <div class="absolute top-0 left-0 w-4 h-4 border-t border-l border-[#BBD1BF]/50 transition-all duration-300 group-hover:w-6 group-hover:h-6 group-hover:border-[#BBD1BF]"></div>
+              <div class="absolute top-0 right-0 w-4 h-4 border-t border-r border-[#BBD1BF]/50 transition-all duration-300 group-hover:w-6 group-hover:h-6 group-hover:border-[#BBD1BF]"></div>
+              <div class="absolute bottom-0 left-0 w-4 h-4 border-b border-l border-[#BBD1BF]/50 transition-all duration-300 group-hover:w-6 group-hover:h-6 group-hover:border-[#BBD1BF]"></div>
+              <div class="absolute bottom-0 right-0 w-4 h-4 border-b border-r border-[#BBD1BF]/50 transition-all duration-300 group-hover:w-6 group-hover:h-6 group-hover:border-[#BBD1BF]"></div>
+
+              <div class="relative z-10 flex flex-col h-full">
+                <div class="flex justify-between items-start mb-10">
+                  <div class="w-12 h-12 border border-[#BBD1BF]/30 flex items-center justify-center bg-[#0c0d0c] text-[#BBD1BF] group-hover:scale-110 group-hover:border-[#BBD1BF] transition-all duration-300 shadow-[0_0_10px_rgba(187,209,191,0.1)]">
+                    <iconify-icon icon="lucide:quote" class="w-6 h-6"></iconify-icon>
+                  </div>
+                  <div class="flex items-center gap-2 bg-[#0c0d0c] border border-[#BBD1BF]/20 px-2 py-1">
+                    <div class="w-1.5 h-1.5 rounded-full bg-[#BBD1BF] shadow-[0_0_5px_#BBD1BF] animate-[pulse_2s_ease-in-out_infinite]"></div>
+                    <span class="text-[10px] font-mono text-[#BBD1BF] uppercase tracking-widest font-geist">Aktív tag</span>
+                  </div>
+                </div>
+
+                <p class="text-sm text-white font-body italic leading-relaxed mb-10">
+                  „[VALÓS tagi idézet ide — pl. a heti piaci képről vagy a magabiztos döntésről. Kitalált idézet NEM mehet ki!]"
+                </p>
+
+                <div class="mt-auto space-y-3 border-t border-[#BBD1BF]/10 pt-6">
+                  <div class="flex justify-between items-center text-[10px] font-mono uppercase tracking-widest text-sage-soft font-geist">
+                    <span>[Tag neve]</span>
+                    <span class="text-[#BBD1BF]">[forrás]</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="reveal mt-16 flex justify-center relative z-10">
+            <div class="inline-flex items-center gap-4 border border-[#BBD1BF]/30 bg-[#1f2622]/60 px-6 py-3 backdrop-blur-sm shadow-[inset_0_0_10px_rgba(187,209,191,0.1)]">
+              <iconify-icon icon="lucide:shield-check" class="w-5 h-5 text-[#BBD1BF]"></iconify-icon>
+              <span class="text-xs font-mono uppercase tracking-widest text-white font-geist">
+                Bármikor lemondható · semmi hozamígéret · $15 örökre
+              </span>
+              <div class="flex gap-1 ml-4">
+                <div class="w-1 h-3 bg-[#BBD1BF] opacity-100"></div>
+                <div class="w-1 h-3 bg-[#BBD1BF] opacity-80"></div>
+                <div class="w-1 h-3 bg-[#BBD1BF] opacity-60"></div>
+                <div class="w-1 h-3 bg-[#BBD1BF] opacity-40"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- FAQ Section -->
+      <section class="max-w-4xl mx-auto px-6 py-24" id="gyik">
+        <div class="reveal text-center mb-16">
+          <div class="inline-flex px-3 py-1 border border-[#BBD1BF]/20 bg-[#2b3a32]/30 text-xs font-mono text-[#BBD1BF] uppercase tracking-widest mb-6 font-geist">
+            Kifogás_napló
+          </div>
+          <h2 class="text-2xl sm:text-3xl uppercase tracking-widest text-white font-jakarta font-medium">
+            Gyakori kérdések
+          </h2>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
+          <div class="reveal flex flex-col" id="faq-list">
+            <button data-a="Pont az időhiányra épül az egész: heti 10 perc a piaci kép, és amikor konkrét részvényről döntenél, a KB Intelligencia 5 perc alatt elemez helyetted. Nincs tananyag-hegy, nincs napi chartbámulás." class="faq-q flex items-center justify-between py-5 border-b border-[#BBD1BF]/10 text-left text-xs font-mono uppercase tracking-widest hover:text-[#BBD1BF] transition-colors text-sage-soft font-geist">
+              Nincs időm még erre is?
+              <iconify-icon icon="solar:alt-arrow-right-linear" class="w-4 h-4"></iconify-icon>
+            </button>
+            <button data-a="Nem kell vakon megbíznod — ez a lényeg. A KB Intelligencia megmutatja, MIT néz és MIÉRT: a számokat, a logikát, a kockázatokat. Szabályalapú keretrendszer, nem jóslás. Te látod az indoklást, és te döntesz." class="faq-q flex items-center justify-between py-5 border-b border-[#BBD1BF]/10 text-left text-xs font-mono uppercase tracking-widest hover:text-[#BBD1BF] transition-colors text-sage-soft font-geist">
+              Megbízhatok egy MI-ben?
+              <iconify-icon icon="solar:alt-arrow-right-linear" class="w-4 h-4"></iconify-icon>
+            </button>
+            <button data-a="Ezt sokan mondták a kutatásunkban is. Ezért: nincs lekötés, bármikor lemondható, semmilyen hozamígéret. A teljes kockázatod egy hónap, $15. Lépj be, futtasd le az első elemzéseid, és csak akkor maradj, ha tényleg értéket kapsz." class="faq-q flex items-center justify-between py-5 border-b border-[#BBD1BF]/10 text-left text-xs font-mono uppercase tracking-widest hover:text-[#BBD1BF] transition-colors text-sage-soft font-geist">
+              Már csalódtam ilyenben.
+              <iconify-icon icon="solar:alt-arrow-right-linear" class="w-4 h-4"></iconify-icon>
+            </button>
+            <button data-a="A döntés minősége nem a tőke méretén múlik — kis összegnél a rossz döntés aránylag még drágább. A rendszer ugyanúgy dolgozik 500 ezer forintnál, mint 10 milliónál." class="faq-q flex items-center justify-between py-5 border-b border-[#BBD1BF]/10 text-left text-xs font-mono uppercase tracking-widest hover:text-[#BBD1BF] transition-colors text-sage-soft font-geist">
+              Kevés a tőkém. Megéri?
+              <iconify-icon icon="solar:alt-arrow-right-linear" class="w-4 h-4"></iconify-icon>
+            </button>
+            <button data-a="Nem. A KB Pro edukációs tartalom + elemzőeszköz + közösség. Nem mondjuk meg személyre szabottan, mit vegyél — eszközt és tudást adunk a saját döntéseidhez. A befektetési döntés mindig a tiéd." class="faq-q flex items-center justify-between py-5 border-b border-[#BBD1BF]/10 text-left text-xs font-mono uppercase tracking-widest hover:text-[#BBD1BF] transition-colors text-sage-soft font-geist">
+              Ez befektetési tanácsadás?
+              <iconify-icon icon="solar:alt-arrow-right-linear" class="w-4 h-4"></iconify-icon>
+            </button>
+            <button data-a="Augusztus 12. éjfélig. Utána az ár visszaáll $24/hóra. Aki aug. 12-ig lép be, annak a $15 (vagy éves $99) örökre rögzül, amíg a tagsága él." class="faq-q flex items-center justify-between py-5 border-b border-[#BBD1BF]/10 text-left text-xs font-mono uppercase tracking-widest hover:text-[#BBD1BF] transition-colors text-sage-soft font-geist">
+              Meddig él a kedvezményes ár?
+              <iconify-icon icon="solar:alt-arrow-right-linear" class="w-4 h-4"></iconify-icon>
+            </button>
+          </div>
+
+          <div class="glow-card reveal p-8 h-full min-h-[250px]" style="background: linear-gradient(135deg, rgba(31, 38, 34, 0.95) 0%, rgba(18, 22, 19, 0.98) 100%); box-shadow: inset 0 0 20px rgba(187, 209, 191, 0.05); border: 1px solid rgba(187, 209, 191, 0.2);">
+            <div class="relative z-10 h-full">
+              <p class="text-xs font-mono uppercase tracking-wider leading-loose text-sage-soft font-geist" id="faq-answer">
+                &gt;&gt; Válassz kérdést balra...
+                <br>
+                <br>
+                Pont az időhiányra épül az egész: heti 10 perc a piaci kép, és amikor konkrét részvényről döntenél, a KB Intelligencia 5 perc alatt elemez helyetted. Nincs tananyag-hegy, nincs napi chartbámulás.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Final CTA Section -->
+      <section class="py-32 relative text-center overflow-hidden border-t border-[#BBD1BF]/10">
+        <div class="max-w-3xl mx-auto px-6 relative z-10">
+          <h2 class="reveal text-3xl md:text-5xl uppercase tracking-widest mb-16 text-white font-jakarta font-medium">
+            A kedvezmény aug. 12-én lejár
+          </h2>
+
+          <div class="relative w-full h-[200px] mb-12 flex justify-center items-center pointer-events-none">
+            <div class="absolute w-[80%] h-px bg-[#BBD1BF]/20"></div>
+            <div class="absolute left-[15%] w-10 h-10 border border-[#BBD1BF]/30 bg-[#1f2622] flex items-center justify-center">
+              <div class="w-3 h-3 bg-[#496358]/80 rounded-sm"></div>
+            </div>
+            <div class="relative w-24 h-24 border-[3px] border-[#BBD1BF] z-10 flex items-center justify-center bg-[#0c0d0c] shadow-[0_0_30px_rgba(187,209,191,0.3)]">
+              <div class="w-8 h-8 bg-[#BBD1BF] rounded-sm rotate-45"></div>
+            </div>
+            <div class="absolute right-[15%] w-10 h-10 border border-[#BBD1BF]/30 bg-[#1f2622] flex items-center justify-center">
+              <iconify-icon icon="solar:hamburger-menu-linear" class="w-4 h-4 text-[#BBD1BF]"></iconify-icon>
+            </div>
+          </div>
+
+          <div class="reveal w-full max-w-md mx-auto relative mb-6">
+            <a href="https://www.skool.com/kb-pro-9433/about" class="group relative flex items-center justify-center px-8 py-4 w-full cursor-pointer overflow-hidden bg-[#1f2622]/40 border border-white/5 backdrop-blur-sm shadow-[inset_0_2px_10px_rgba(0,0,0,0.5)]">
+              <div class="absolute left-0 top-0 bottom-0 w-[4px] bg-[#BBD1BF] transition-all group-hover:w-[8px] group-hover:bg-white shadow-[0_0_10px_rgba(187,209,191,0.5)]"></div>
+              <div class="absolute right-0 top-0 bottom-0 w-[4px] bg-[#BBD1BF] transition-all group-hover:w-[8px] group-hover:bg-white shadow-[0_0_10px_rgba(187,209,191,0.5)]"></div>
+              <div class="absolute inset-0 bg-gradient-to-r from-[#BBD1BF]/0 via-[#BBD1BF]/10 to-[#BBD1BF]/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+              <span class="relative z-10 text-white font-mono text-sm tracking-widest uppercase flex items-center gap-2 group-hover:drop-shadow-[0_0_8px_rgba(255,255,255,0.8)] font-geist">
+                Belépek $15-ért
+                <iconify-icon icon="solar:arrow-right-linear" class="w-4 h-4"></iconify-icon>
+              </span>
+            </a>
+            <p class="text-[10px] font-mono uppercase tracking-widest text-sage-soft mt-4 font-geist opacity-80">
+              $15/hó kedvezményes ár örökre · éves $99 · aug. 12. éjfél után $24
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Footer -->
+      <footer class="relative border-t border-[#BBD1BF]/10 pt-20 pb-10 overflow-hidden bg-[#0c0d0c]">
+        <div class="absolute bottom-[-5%] left-1/2 -translate-x-1/2 text-[20vw] tracking-tighter text-transparent bg-clip-text bg-gradient-to-b from-[#BBD1BF]/[0.05] to-transparent pointer-events-none select-none leading-none w-full text-center uppercase font-jakarta font-medium">
+          KB Pro
+        </div>
+
+        <div class="max-w-7xl mx-auto px-6 relative z-10">
+          <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-20">
+            <div class="md:col-span-2">
+              <h3 class="text-sm font-mono uppercase font-semibold tracking-widest text-white mb-4 font-geist">
+                Kezdő Befektető Pro
+              </h3>
+              <p class="text-xs font-mono uppercase tracking-widest max-w-sm mb-8 leading-relaxed text-sage-soft font-geist">
+                MI-támogatott döntéstámogatás magyar befektetőknek — heti 10 percben.
+              </p>
+              <div class="flex gap-4">
+                <a href="https://www.instagram.com/kezdobefekteto" class="w-10 h-10 border border-[#BBD1BF]/30 bg-[#1f2622] flex items-center justify-center hover:border-[#BBD1BF] transition-colors hover:text-[#BBD1BF] text-sage-soft">
+                  <iconify-icon icon="solar:camera-linear" class="w-4 h-4"></iconify-icon>
+                </a>
+                <a href="https://www.skool.com/kb-pro-9433/about" class="w-10 h-10 border border-[#BBD1BF]/30 bg-[#1f2622] flex items-center justify-center hover:border-[#BBD1BF] transition-colors hover:text-[#BBD1BF] text-sage-soft">
+                  <iconify-icon icon="solar:hashtag-linear" class="w-4 h-4"></iconify-icon>
+                </a>
+              </div>
+            </div>
+
+            <div>
+              <ul class="space-y-4 font-mono text-xs uppercase tracking-widest">
+                <li><a href="#rendszer" class="hover:text-[#BBD1BF] transition-colors text-sage-soft font-geist">A rendszer</a></li>
+                <li><a href="#arak" class="text-[#BBD1BF] font-medium border-l-[3px] border-[#BBD1BF] pl-2 font-geist">Kedvezményes ár</a></li>
+                <li><a href="#velemenyek" class="hover:text-[#BBD1BF] transition-colors text-sage-soft font-geist">Tagok</a></li>
+              </ul>
+            </div>
+
+            <div>
+              <ul class="space-y-4 font-mono text-xs uppercase tracking-widest">
+                <li><a href="#gyik" class="text-white font-medium hover:text-[#BBD1BF] font-geist">GYIK</a></li>
+                <li><a href="https://www.skool.com/kb-pro-9433/about" class="text-white font-medium hover:text-[#BBD1BF] font-geist">Belépés</a></li>
+              </ul>
+            </div>
+          </div>
+
+          <p class="text-[10px] font-mono uppercase tracking-wide leading-relaxed text-sage-soft opacity-70 max-w-4xl mb-10 font-geist">
+            A Kezdő Befektető Pro tartalmai oktatási és tájékoztatási célúak, nem minősülnek befektetési
+            tanácsadásnak, sem vételi/eladási ajánlásnak. A múltbeli teljesítmény nem garancia a jövőre nézve.
+            A részvénybefektetés tőkevesztés kockázatával jár. Befektetési döntés előtt mérlegeld a saját
+            pénzügyi helyzeted, és szükség esetén kérj engedéllyel rendelkező szakértő tanácsát.
+          </p>
+
+          <div class="flex flex-col md:flex-row justify-between items-center pt-8 border-t border-[#BBD1BF]/10 text-[10px] font-mono uppercase tracking-widest text-sage-soft">
+            <p class="font-geist">© 2026 // Kezdő Befektető Pro</p>
+            <div class="flex gap-6 mt-4 md:mt-0">
+              <a href="https://www.skool.com/kb-pro-9433/about" class="hover:text-[#BBD1BF] transition-colors font-geist">
+                skool.com/kb-pro-9433
+              </a>
+            </div>
+          </div>
+        </div>
+      </footer>
+    </main>
+
+    <script>
+      // --- WebGL Beam Background (KB zsálya) ---
+      const canvas = document.getElementById('webgl-canvas');
+      const gl = canvas.getContext('webgl');
+
+      if (gl) {
+          function resizeCanvas() {
+              canvas.width = window.innerWidth;
+              canvas.height = window.innerHeight;
+              gl.viewport(0, 0, canvas.width, canvas.height);
+          }
+          window.addEventListener('resize', resizeCanvas);
+          resizeCanvas();
+
+          const vertexShaderSource = `
+              attribute vec2 position;
+              void main() {
+                  gl_Position = vec4(position, 0.0, 1.0);
+              }
+          `;
+
+          const fragmentShaderSource = `
+              precision highp float;
+              uniform vec2 u_resolution;
+              uniform float u_time;
+
+              float random(vec2 st) {
+                  return fract(sin(dot(st.xy, vec2(12.9898,78.233))) * 43758.5453123);
+              }
+
+              float noise(vec2 st) {
+                  vec2 i = floor(st);
+                  vec2 f = fract(st);
+                  float a = random(i);
+                  float b = random(i + vec2(1.0, 0.0));
+                  float c = random(i + vec2(0.0, 1.0));
+                  float d = random(i + vec2(1.0, 1.0));
+                  vec2 u = f * f * (3.0 - 2.0 * f);
+                  return mix(a, b, u.x) + (c - a) * u.y * (1.0 - u.x) + (d - b) * u.x * u.y;
+              }
+
+              float fbm(vec2 st) {
+                  float value = 0.0;
+                  float amplitude = 0.5;
+                  for (int i = 0; i < 5; i++) {
+                      value += amplitude * noise(st);
+                      st *= 2.0;
+                      amplitude *= 0.5;
+                  }
+                  return value;
+              }
+
+              void main() {
+                  vec2 uv = gl_FragCoord.xy / u_resolution.xy;
+                  vec2 p = uv * 2.0 - 1.0;
+                  p.x *= u_resolution.x / u_resolution.y;
+
+                  float beamX = -0.1;
+                  float dist = abs(p.x - beamX);
+
+                  float core = 0.001 / dist;
+                  core = smoothstep(0.0, 1.0, core);
+
+                  float glow = 0.02 / (dist + 0.05);
+
+                  vec2 smokeUV = vec2(p.x, p.y - u_time * 0.1);
+                  float smokeNoise = fbm(smokeUV * 3.0 + vec2(u_time * 0.05, 0.0));
+                  float smokeScatter = smoothstep(0.8, 0.0, dist);
+                  float smoke = smokeNoise * smokeScatter * 0.4;
+
+                  float pulse = sin(u_time * 2.0) * 0.1 + 0.9;
+
+                  vec3 beamColor = vec3(0.733, 0.820, 0.749);
+                  vec3 smokeColor = vec3(0.286, 0.388, 0.345);
+                  vec3 coreColor = vec3(1.0, 1.0, 1.0);
+
+                  vec3 finalColor = core * coreColor + glow * beamColor * pulse + smoke * smokeColor;
+                  float edge = smoothstep(1.0, 0.4, abs(p.x)) * smoothstep(1.0, 0.2, abs(p.y));
+
+                  gl_FragColor = vec4(finalColor * edge, 1.0);
+              }
+          `;
+
+          function compileShader(gl, source, type) {
+              const shader = gl.createShader(type);
+              gl.shaderSource(shader, source);
+              gl.compileShader(shader);
+              return shader;
+          }
+
+          const vertexShader = compileShader(gl, vertexShaderSource, gl.VERTEX_SHADER);
+          const fragmentShader = compileShader(gl, fragmentShaderSource, gl.FRAGMENT_SHADER);
+
+          const program = gl.createProgram();
+          gl.attachShader(program, vertexShader);
+          gl.attachShader(program, fragmentShader);
+          gl.linkProgram(program);
+
+          const positionBuffer = gl.createBuffer();
+          gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+          gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
+              -1.0, -1.0,  1.0, -1.0, -1.0,  1.0,
+              -1.0,  1.0,  1.0, -1.0,  1.0,  1.0
+          ]), gl.STATIC_DRAW);
+
+          const positionLocation = gl.getAttribLocation(program, 'position');
+          gl.enableVertexAttribArray(positionLocation);
+          gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
+
+          gl.useProgram(program);
+
+          const timeLocation = gl.getUniformLocation(program, 'u_time');
+          const resolutionLocation = gl.getUniformLocation(program, 'u_resolution');
+
+          let startTime = performance.now();
+          function render() {
+              const currentTime = performance.now();
+              gl.uniform1f(timeLocation, (currentTime - startTime) / 1000);
+              gl.uniform2f(resolutionLocation, canvas.width, canvas.height);
+              gl.drawArrays(gl.TRIANGLES, 0, 6);
+              requestAnimationFrame(render);
+          }
+          render();
+      }
+
+      // --- GSAP Boot Sequence ---
+      document.addEventListener("DOMContentLoaded", () => {
+          gsap.set("#bg-orange-bottom", { xPercent: -100, yPercent: 100 });
+          gsap.set("#bg-darkorange-bottom", { xPercent: -100, yPercent: 100 });
+          gsap.set("#bg-orange-topleft", { xPercent: -100 });
+
+          gsap.set("#top-accent", { opacity: 0, y: -20 });
+          gsap.set("#pre-title", { opacity: 0, letterSpacing: "0.5em" });
+          gsap.set("#title-text", { opacity: 0, scale: 1.1, filter: "blur(10px)" });
+
+          const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
+
+          tl.to("#bg-orange-topleft", { xPercent: 0, duration: 1.2 })
+            .to("#bg-orange-bottom", { xPercent: 0, yPercent: 0, duration: 1.5 }, "-=1.0")
+            .to("#bg-darkorange-bottom", { xPercent: 0, yPercent: 0, duration: 1.5 }, "-=1.2")
+            .to("#top-accent", {
+              opacity: 1,
+              y: 0,
+              duration: 0.8
+            }, "-=0.6")
+            .to("#pre-title", {
+              opacity: 1,
+              letterSpacing: "0.1em",
+              duration: 1
+            }, "-=0.4")
+            .to("#title-text", {
+              opacity: 1,
+              scale: 1,
+              filter: "blur(0px)",
+              duration: 1.5,
+              ease: "expo.out"
+            }, "-=0.2");
+
+            // --- Interactive Flashlight Cards ---
+            const glowCards = document.querySelectorAll('.glow-card');
+            glowCards.forEach(card => {
+                card.addEventListener('mousemove', e => {
+                    const rect = card.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    card.style.setProperty('--mouse-x', `${x}px`);
+                    card.style.setProperty('--mouse-y', `${y}px`);
+                });
+            });
+
+            // --- FAQ interakció ---
+            const answerEl = document.getElementById('faq-answer');
+            const activeCls = ['bg-[#1f2622]','border','border-[#BBD1BF]','shadow-[inset_0_0_10px_rgba(187,209,191,0.2)]','text-[#BBD1BF]','px-4','my-2'];
+            document.querySelectorAll('.faq-q').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.faq-q').forEach(b => b.classList.remove(...activeCls));
+                    btn.classList.add(...activeCls);
+                    answerEl.innerHTML = '&gt;&gt; ' + btn.textContent.trim().split('\n')[0] + '<br><br>' + btn.dataset.a;
+                });
+            });
+
+            // --- Scroll Reveal ---
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: "0px 0px -50px 0px"
+            };
+
+            const revealObserver = new IntersectionObserver((entries) => {
+                let delay = 0;
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        setTimeout(() => {
+                            entry.target.classList.add('active');
+                        }, delay);
+                        delay += 100;
+                        revealObserver.unobserve(entry.target);
+                    }
+                });
+            }, observerOptions);
+
+            document.querySelectorAll('.reveal').forEach((el) => {
+                revealObserver.observe(el);
+            });
+      });
+    </script>
+</body></html>
