@@ -9,7 +9,23 @@
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&amp;family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500;700&amp;display=swap" rel="stylesheet">
 <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-<!-- TODO: Meta Pixel kód ide (Pixel ID beillesztése a mérés-beállításkor) + CAPI a szerveroldalon -->
+<!-- Meta Pixel -->
+<script>
+!function(f,b,e,v,n,t,s)
+{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];
+s.parentNode.insertBefore(t,s)}(window, document,'script',
+'https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', '896168129111959');
+fbq('track', 'PageView');
+</script>
+<noscript><img height="1" width="1" style="display:none"
+src="https://www.facebook.com/tr?id=896168129111959&ev=PageView&noscript=1"
+/></noscript>
+<!-- End Meta Pixel -->
 <style>
 body {
 font-family: 'Space Grotesk', sans-serif;
@@ -1019,6 +1035,13 @@ opacity: 0;
                     const y = e.clientY - rect.top;
                     card.style.setProperty('--mouse-x', `${x}px`);
                     card.style.setProperty('--mouse-y', `${y}px`);
+                });
+            });
+
+            // --- Meta Pixel: Skool-átkattintás mint konverzió-közeli esemény ---
+            document.querySelectorAll('a[href*="skool.com"]').forEach(a => {
+                a.addEventListener('click', () => {
+                    if (typeof fbq === 'function') fbq('track', 'InitiateCheckout');
                 });
             });
 
